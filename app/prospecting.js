@@ -8,12 +8,15 @@ import { BsPeopleFill, BsBuildingsFill, BsPlus } from "react-icons/bs";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import local from 'next/font/local';
 
 export default function Prospecting() {
   const [selectedPeople, setSelectedPeople] = useState([]);
   const [selectedCompanies, setSelectedCompanies] = useState([]);
   const [isSettingsOpen, setSettingsOpen] = useState(false);
   const [apiKey, setApiKey] = useState(null);
+  const [isRecentSearchesOpen, setRecentSearchesOpen] = useState(false);
+  const [recentSearches, setRecentSearches] = useState([]);
 
   useEffect(() => {
     const apiKey = localStorage.getItem("apiKey");
@@ -26,6 +29,8 @@ export default function Prospecting() {
     localStorage.setItem("apiKey", apiKey);
     setSettingsOpen(false);
   };
+
+
 
   const handleExport = () => {
     console.log(selectedPeople, "selectedPeople");
@@ -78,7 +83,7 @@ export default function Prospecting() {
           >
             Settings
           </button>
-          <button className="flex items-center gap-2 bg-white text-blue-500 px-4 rounded-md py-2 disabled:opacity-50 font-semibold">
+          <button className="flex items-center gap-2 bg-white text-blue-500 px-4 rounded-md py-2 disabled:opacity-50 font-semibold" onClick={() => setRecentSearchesOpen(true)}>
             Recent Searches
           </button>
           <button
@@ -97,6 +102,9 @@ export default function Prospecting() {
           <PeopleFilter
             selectedPeople={selectedPeople}
             setSelectedPeople={setSelectedPeople}
+            isRecentSearchesOpen={isRecentSearchesOpen}
+            setRecentSearches={setRecentSearches}
+            setRecentSearchesOpen={setRecentSearchesOpen}
           />
         </TabsContent>
         <TabsContent value="company">
