@@ -9,8 +9,6 @@ import {
 } from "@/components/ui/dialog";
 
 const Modal = ({ isOpen, setIsOpen, viewDetails }) => {
-  console.log(viewDetails, "viewDetails");
-
   if (!viewDetails) return null;
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -60,25 +58,25 @@ const Modal = ({ isOpen, setIsOpen, viewDetails }) => {
 
             {viewDetails.profile.education.length > 0 && (
               <>
-              <h2 className="text-lg font-bold mt-6 mb-2">Education</h2>
-              <div className="flex flex-col gap-2">
-                {viewDetails.profile.education.map((education, index) => (
-                  <div key={education.degree_name}>
-                    <span
-                      key={index}
-                      className="block text-sm text-gray-600 font-semibold"
-                    >{`${education.degree_name} in ${education.field_of_study} at ${education.school}`}</span>
-                    <span className="block text-sm text-gray-500">
-                      {education.starts_at?.day &&
-                        `${education.starts_at.day}/${education.starts_at.month}/${education.starts_at.year} - `}
+                <h2 className="text-lg font-bold mt-6 mb-2">Education</h2>
+                <div className="flex flex-col gap-2">
+                  {viewDetails.profile.education.map((education, index) => (
+                    <div key={education.degree_name}>
+                      <span
+                        key={index}
+                        className="block text-sm text-gray-600 font-semibold"
+                      >{`${education.degree_name} in ${education.field_of_study} at ${education.school}`}</span>
+                      <span className="block text-sm text-gray-500">
+                        {education.starts_at?.day &&
+                          `${education.starts_at.day}/${education.starts_at.month}/${education.starts_at.year} - `}
 
-                      {education.ends_at?.day
-                        ? `${education.ends_at.day}/${education.ends_at.month}/${education.ends_at.year}`
-                        : "Present"}
-                    </span>
-                  </div>
-                ))}
-              </div>
+                        {education.ends_at?.day
+                          ? `${education.ends_at.day}/${education.ends_at.month}/${education.ends_at.year}`
+                          : "Present"}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </>
             )}
           </DialogDescription>

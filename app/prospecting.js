@@ -53,7 +53,7 @@ export default function Prospecting() {
   };
 
   return (
-    <div className="p-8 bg-gray-200">
+    <div className="p-8 bg-gray-200 min-h-full">
       <Tabs defaultValue="people" className="max-w-7xl relative">
         <TabsList>
           <TabsTrigger
@@ -89,6 +89,7 @@ export default function Prospecting() {
             className="flex items-center gap-2 bg-blue-500 text-white px-4 rounded-md py-2 disabled:opacity-50 font-semibold"
           >
             Export to CSV
+    
           </button>
         </div>
 

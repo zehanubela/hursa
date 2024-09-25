@@ -1,4 +1,4 @@
-import {useState} from "react";
+import { useState } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -11,24 +11,61 @@ import { FaLinkedin } from "react-icons/fa";
 import Link from "next/link";
 import { Checkbox } from "@/components/ui/checkbox";
 import Modal from "./Modal";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import Loader from "./Loader";
+import { FaArrowLeft } from "react-icons/fa";
+
 const PeopleFilter = ({ selectedPeople, setSelectedPeople }) => {
-  // const [people, setPeople] = React.useState([]);
+  const [peopleData, setPeopleData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [viewDetails, setViewDetails] = useState(null)
+  const [viewDetails, setViewDetails] = useState(null);
+  const [error, setError] = useState([]);
+  const [payload, setPayload] = useState({
+    country: "ww",
+    current_role: "",
+    current_company: "",
+  });
+  const [isLoading, setIsLoading] = useState(false);
 
-  // React.useEffect(() => {
-  //   // Fetch data from the JSON file
-  //   fetch("/app/person_search_mock.json")
-  //     .then((response) => response.json())
-  //     .then((data) => setPeople(data.results));
-  // }, []);
+  const handleSearch = async () => {
+    setError([]);
+    let hasError = false;
 
-  // console.log(mockPeopleData, "mockpeople");
+    if (payload.country === "") {
+      setError((prev) => [...prev, "Country is required"]);
+      hasError = true;
+    }
+    const apiKey = localStorage.getItem("apiKey");
+    if (!apiKey) {
+      setError((prev) => [...prev, "Please enter your API key"]);
+      hasError = true;
+    }
+
+    if (hasError) return;
+
+    try {
+      setIsLoading(true);
+      await fetch(
+        `http://localhost:3000/api/mockPeople?country=${payload.country}&page_size=10&enrich_profiles=enrich`,
+        {
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+          },
+        },
+      )
+        .then((response) => response.json())
+        .then((data) => setPeopleData(data.results));
+    } catch (error) {
+      console.log(error, "error");
+    }
+    setIsLoading(false);
+  };
 
   const handleViewDetails = (person) => {
-    setViewDetails(person)
-    setIsModalOpen(true)
-  }
+    setViewDetails(person);
+    setIsModalOpen(true);
+  };
 
   return (
     <div className="flex gap-6">
@@ -40,10 +77,13 @@ const PeopleFilter = ({ selectedPeople, setSelectedPeople }) => {
           <AccordionItem value="country">
             <AccordionTrigger>Location</AccordionTrigger>
             <AccordionContent>
-              <input
+              <Input
                 type="text"
                 placeholder="Country"
                 className="border border-gray-300 rounded-md p-2"
+                onChange={(e) =>
+                  setPayload({ ...payload, country: e.target.value })
+                }
               />
             </AccordionContent>
           </AccordionItem>
@@ -69,22 +109,54 @@ const PeopleFilter = ({ selectedPeople, setSelectedPeople }) => {
               />
             </AccordionContent>
           </AccordionItem>
+
+          <div className="flex justify-center">
+            <Button onClick={handleSearch} className="w-full mt-4">
+              Apply
+            </Button>
+          </div>
+
+          {error &&
+            error.map((err) => (
+              <p
+                className="text-red-500 text-sm font-semibold text-center mt-2"
+                key={err}
+              >
+                {err}
+              </p>
+            ))}
         </Accordion>
       </div>
-      <div className="w-3/4 bg-white rounded-lg p-4 min-h-56">
+    <div className="w-3/4 bg-white rounded-lg p-4">
         <div>
-          {mockPeopleData.results.map((person) => (
+          {!isLoading && peopleData.length === 0 && <div>
+
+            <span className="flex items-center gap-4 w-full justify-center mt-24">
+              <FaArrowLeft className="text-5xl" />
+             <span className="text-3xl font-semibold">Find your prospects here</span>
+            </span>
+            </div>}
+          {isLoading ? <Loader /> : peopleData.map((person) => (
             <div
               key={person.profile.public_identifier}
               className="flex justify-between border-b-2 border-gray-200 py-2"
             >
-              <Checkbox checked={selectedPeople.includes(person)} onCheckedChange={(checked) => {
-                if (checked) {
-                  setSelectedPeople([...selectedPeople, person]);
-                } else {
-                  setSelectedPeople(selectedPeople.filter(p => p.profile.public_identifier !== person.profile.public_identifier));
-                }
-              }} />
+              <Checkbox
+                checked={selectedPeople.includes(person)}
+                onCheckedChange={(checked) => {
+                  if (checked) {
+                    setSelectedPeople([...selectedPeople, person]);
+                  } else {
+                    setSelectedPeople(
+                      selectedPeople.filter(
+                        (p) =>
+                          p.profile.public_identifier !==
+                          person.profile.public_identifier,
+                      ),
+                    );
+                  }
+                }}
+              />
               <div className="flex flex-col gap-2 border-r-2 border-gray-200 w-[400px]">
                 <div className="flex items-center gap-2">
                   <a
@@ -133,7 +205,10 @@ const PeopleFilter = ({ selectedPeople, setSelectedPeople }) => {
               </div>
 
               <div>
-                <button onClick={() => handleViewDetails(person)} className="border-2 border-blue-500 bg-white text-blue-500 px-4 py-2 rounded-md">
+                <button
+                  onClick={() => handleViewDetails(person)}
+                  className="border-2 border-blue-500 bg-white text-blue-500 px-4 py-2 rounded-md"
+                >
                   View Details
                 </button>
               </div>
@@ -141,7 +216,11 @@ const PeopleFilter = ({ selectedPeople, setSelectedPeople }) => {
           ))}
         </div>
       </div>
-      <Modal isOpen={isModalOpen} setIsOpen={setIsModalOpen} viewDetails={viewDetails} />
+      <Modal
+        isOpen={isModalOpen}
+        setIsOpen={setIsModalOpen}
+        viewDetails={viewDetails}
+      />
     </div>
   );
 };
