@@ -9,8 +9,8 @@ const CompanyFilter = () => {
       </div>
       <div className="w-3/4 bg-white rounded-lg p-4">
         {/* Main content area */}
-        <h3 className="font-bold">Content Area</h3>
-        <div>Companies Results</div>
+        <h3 className="font-bold">Coming soon!</h3>
+
       </div>
     </div>
   )

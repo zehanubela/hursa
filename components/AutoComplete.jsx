@@ -1,9 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-const AutoComplete = ({ options }) => {
+const AutoComplete = ({ options, setSelectedOption }) => {
     const [inputValue, setInputValue] = useState('');
-    const [filteredOptions, setFilteredOptions] = useState([]);
-    const [selectedOption, setSelectedOption] = useState(null);
+    const [filteredOptions, setFilteredOptions] = useState([]);;
     const dropdownRef = useRef(null); // Reference for the dropdown
 
     const handleChange = (e) => {
@@ -37,7 +36,7 @@ const AutoComplete = ({ options }) => {
                 type="text" 
                 value={inputValue} 
                 onChange={handleChange} 
-                placeholder="Search..." 
+                placeholder="United States" 
                 className="border border-gray-300 rounded p-2 w-full"
             />
             {filteredOptions.length > 0 && (

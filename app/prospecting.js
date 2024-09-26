@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PeopleFilter from "@/components/PeopleFilter";
 import CompanyFilter from "@/components/CompanyFilter";
@@ -8,7 +7,6 @@ import { BsPeopleFill, BsBuildingsFill, BsPlus } from "react-icons/bs";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import local from 'next/font/local';
 
 export default function Prospecting() {
   const [selectedPeople, setSelectedPeople] = useState([]);
@@ -59,7 +57,7 @@ export default function Prospecting() {
 
   return (
     <div className="p-8 bg-gray-200 min-h-full">
-      <Tabs defaultValue="people" className="max-w-7xl relative">
+      <Tabs defaultValue="people" className="max-w-7xl mx-auto relative">
         <TabsList>
           <TabsTrigger
             value="people"
@@ -79,11 +77,11 @@ export default function Prospecting() {
         <div className="absolute right-0 top-0 flex gap-6">
           <button
             onClick={() => setSettingsOpen(true)}
-            className="flex items-center gap-2 bg-blue-500 text-white px-4 rounded-md py-2 disabled:opacity-50 font-semibold"
+            className="flex items-center gap-2 bg-blue-600 text-white px-4 rounded-md py-2 disabled:opacity-50 font-semibold"
           >
             Settings
           </button>
-          <button className="flex items-center gap-2 bg-white text-blue-500 px-4 rounded-md py-2 disabled:opacity-50 font-semibold" onClick={() => setRecentSearchesOpen(true)}>
+          <button className="flex items-center gap-2 bg-white text-blue-600 px-4 rounded-md py-2 disabled:opacity-50 font-semibold" onClick={() => setRecentSearchesOpen(true)}>
             Recent Searches
           </button>
           <button
@@ -91,10 +89,10 @@ export default function Prospecting() {
               selectedCompanies.length === 0 && selectedPeople.length === 0
             }
             onClick={handleExport}
-            className="flex items-center gap-2 bg-blue-500 text-white px-4 rounded-md py-2 disabled:opacity-50 font-semibold"
+            className="flex items-center gap-2 bg-blue-600 text-white px-4 rounded-md py-2 disabled:opacity-50 font-semibold"
           >
             Export to CSV
-    
+
           </button>
         </div>
 
@@ -107,7 +105,7 @@ export default function Prospecting() {
             setRecentSearchesOpen={setRecentSearchesOpen}
           />
         </TabsContent>
-        <TabsContent value="company">
+        <TabsContent value="company" className="w-full mt-6">
           <CompanyFilter />
         </TabsContent>
       </Tabs>

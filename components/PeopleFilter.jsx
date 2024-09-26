@@ -6,7 +6,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import mockPeopleData from "@/app/person_search_mock.json";
-import { IoLocationSharp } from "react-icons/io5";
+import { IoLocationOutline, IoLocationSharp } from "react-icons/io5";
 import { FaLinkedin } from "react-icons/fa";
 import Link from "next/link";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -15,15 +15,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Loader from "./Loader";
 import { FaArrowLeft } from "react-icons/fa";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import AutoComplete from "./AutoComplete";
 import countryISO from "@/lib/countryISO.json";
+import { IoMdBriefcase } from "react-icons/io";
+import { FaBuilding } from "react-icons/fa";
 
 const PeopleFilter = ({
   selectedPeople,
@@ -71,7 +66,10 @@ const PeopleFilter = ({
     }
     const apiKey = localStorage.getItem("apiKey");
     if (!apiKey) {
-      setError((prev) => [...prev, "Please enter your API key"]);
+      setError((prev) => [
+        ...prev,
+        "Please enter your API key in the settings",
+      ]);
       hasError = true;
     }
 
@@ -116,16 +114,33 @@ const PeopleFilter = ({
 
         <Accordion type="single" collapsible>
           <AccordionItem value="country">
-            <AccordionTrigger>Location</AccordionTrigger>
+            <AccordionTrigger className="flex justify-start gap-2">
+              <IoLocationSharp
+                style={{ transform: "rotate(0deg)" }}
+                className="h-5 w-5  text-blue-600 inline-block"
+              />
+              <span className="text-lg font-bold">Location</span>
+            </AccordionTrigger>
             <AccordionContent>
-              <AutoComplete options={countryISO} />
+              <AutoComplete
+                options={countryISO}
+                setSelectedOption={(option) =>
+                  setPayload({ ...payload, country: option })
+                }
+              />
             </AccordionContent>
           </AccordionItem>
 
           <AccordionItem value="current-role">
-            <AccordionTrigger>Job Title</AccordionTrigger>
+            <AccordionTrigger className="flex justify-start gap-2">
+            <IoMdBriefcase
+                style={{ transform: "rotate(0deg)" }}
+                className="h-5 w-5  text-blue-600 inline-block"
+              />
+              <span className="text-lg font-bold">Job Title</span>
+            </AccordionTrigger>
             <AccordionContent>
-              <input
+              <Input
                 type="text"
                 placeholder="Software Engineer"
                 className="border border-gray-300 rounded-md p-2"
@@ -138,9 +153,15 @@ const PeopleFilter = ({
           </AccordionItem>
 
           <AccordionItem value="current-company">
-            <AccordionTrigger>Current Company</AccordionTrigger>
+          <AccordionTrigger className="flex justify-start gap-2">
+              <FaBuilding
+                style={{ transform: "rotate(0deg)" }}
+                className="h-5 w-5  text-blue-600 inline-block"
+              />
+              <span className="text-lg font-bold">Current Company</span>
+            </AccordionTrigger>
             <AccordionContent>
-              <input
+              <Input
                 type="text"
                 placeholder="Current Company"
                 className="border border-gray-300 rounded-md p-2"
@@ -155,7 +176,7 @@ const PeopleFilter = ({
           <div className="flex justify-center">
             <Button
               onClick={handleSearch}
-              className="w-full mt-4 bg-blue-500 text-white text-md font-semibold"
+              className="w-full mt-4 bg-blue-600 text-white text-md font-semibold"
             >
               Apply
             </Button>
@@ -220,9 +241,10 @@ const PeopleFilter = ({
             peopleData.map((person) => (
               <div
                 key={person.profile.public_identifier}
-                className="flex justify-between border-b-2 border-gray-200 py-2"
+                className="flex border-b-2 border-gray-200 py-4"
               >
                 <Checkbox
+                  className="mr-6 self-center"
                   checked={selectedPeople.includes(person)}
                   onCheckedChange={(checked) => {
                     if (checked) {
@@ -238,28 +260,28 @@ const PeopleFilter = ({
                     }
                   }}
                 />
-                <div className="flex flex-col gap-2 border-r-2 border-gray-200 w-[400px]">
-                  <div className="flex items-center gap-2">
+                <div className="flex flex-col border-r-2 border-gray-200 w-[400px] truncate pr-4">
+                  <div className="flex items-center gap-2 flex-0">
                     <a
-                      className="text-blue-500 block truncate"
+                      className="text-black block text-md font-semibold"
                       href={person.linkedin_profile_url}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
                       {person.profile.full_name}
                     </a>
-                    <FaLinkedin />
+                    <FaLinkedin className="text-blue-600" />
                   </div>
-                  <p className="truncate">
+                  <p className="text-sm">
                     {person.profile.experiences[0].title}
                   </p>
-                  <div className="flex items-center gap-2">
-                    <IoLocationSharp />
-                    <span className="truncate">{`${person.profile.city}, ${person.profile.state}, ${person.profile.country}`}</span>
+                  <div className="flex items-center gap-2 mt-2">
+                    <IoLocationSharp className="text-gray-500" />
+                    <span className="text-gray-500 text-sm">{`${person.profile.city}, ${person.profile.state}, ${person.profile.country}`}</span>
                   </div>
                 </div>
 
-                <div>
+                <div className="w-[300px] truncate px-4">
                   {person.profile.experiences[0]
                     .company_linkedin_profile_url ? (
                     <Link
@@ -270,27 +292,27 @@ const PeopleFilter = ({
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <span className="text-blue-500 block truncate">
+                      <span className="text-blue-600 text-sm font-semibold">
                         {person.profile.experiences[0].company}
                       </span>
                     </Link>
                   ) : (
-                    <span className="block truncate">
+                    <span className="text-sm font-semibold">
                       {person.profile.experiences[0].company}
                     </span>
                   )}
 
                   {person.profile.experiences[0].location ? (
-                    <span className="block truncate">
+                    <span className="block text-sm text-gray-500 ">
                       {person.profile.experiences[0].location}
                     </span>
                   ) : null}
                 </div>
 
-                <div>
+                <div className="ml-auto">
                   <button
                     onClick={() => handleViewDetails(person)}
-                    className="border-2 border-blue-500 bg-white text-blue-500 px-4 py-2 rounded-md"
+                    className="border-2 border-blue-600 bg-white text-blue-600 px-4 py-2 rounded-md"
                   >
                     View Details
                   </button>
