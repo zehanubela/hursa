@@ -33,8 +33,8 @@ const PeopleFilter = ({
   const [error, setError] = useState([]);
   const [payload, setPayload] = useState({
     country: "",
-    current_role: "",
-    current_company: "",
+    current_role_title: "",
+    current_company_name: "",
   });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -43,8 +43,8 @@ const PeopleFilter = ({
       JSON.parse(localStorage.getItem("recentSearches")) || [];
     existingSearches.push({
       country: payload.country,
-      current_role: payload.current_role,
-      current_company: payload.current_company,
+      current_role_title: payload.current_role_title,
+      current_company_name: payload.current_company_name,
       results: searches,
     });
 
@@ -77,9 +77,26 @@ const PeopleFilter = ({
 
     try {
       setIsLoading(true);
+
+      const params = new URLSearchParams({
+        country: countryISO.find(country => country.label=== payload.country).value,
+        page_size: 10,
+        enrich_profiles: "enrich",
+    });
+
+    // Conditionally add parameters if they are not empty
+    if (payload.current_role_title) {
+        params.append("current_role_title", payload.current_role_title);
+    }
+    if (payload.current_company_name) {
+        params.append("current_company_name", payload.current_company_name);
+    }
+
+
       await fetch(
-        `http://localhost:3000/api/mockPeople?country=${payload.country}&page_size=10&enrich_profiles=enrich`,
+        `/api/mockPeople?${params.toString()}`,
         {
+          method: "GET",
           headers: {
             Authorization: `Bearer ${apiKey}`,
           },
@@ -133,7 +150,7 @@ const PeopleFilter = ({
 
           <AccordionItem value="current-role">
             <AccordionTrigger className="flex justify-start gap-2">
-            <IoMdBriefcase
+              <IoMdBriefcase
                 style={{ transform: "rotate(0deg)" }}
                 className="h-5 w-5  text-blue-600 inline-block"
               />
@@ -144,16 +161,16 @@ const PeopleFilter = ({
                 type="text"
                 placeholder="Software Engineer"
                 className="border border-gray-300 rounded-md p-2"
-                value={payload.current_role}
+                value={payload.current_role_title}
                 onChange={(e) =>
-                  setPayload({ ...payload, current_role: e.target.value })
+                  setPayload({ ...payload, current_role_title: e.target.value })
                 }
               />
             </AccordionContent>
           </AccordionItem>
 
           <AccordionItem value="current-company">
-          <AccordionTrigger className="flex justify-start gap-2">
+            <AccordionTrigger className="flex justify-start gap-2">
               <FaBuilding
                 style={{ transform: "rotate(0deg)" }}
                 className="h-5 w-5  text-blue-600 inline-block"
@@ -165,9 +182,9 @@ const PeopleFilter = ({
                 type="text"
                 placeholder="Current Company"
                 className="border border-gray-300 rounded-md p-2"
-                value={payload.current_company}
+                value={payload.current_company_name}
                 onChange={(e) =>
-                  setPayload({ ...payload, current_company: e.target.value })
+                  setPayload({ ...payload, current_company_name: e.target.value })
                 }
               />
             </AccordionContent>
@@ -209,11 +226,11 @@ const PeopleFilter = ({
                       >
                         <span>{search.country}</span>
                         <span>{` ${
-                          search.current_role && ", " + search.current_role
+                          search.current_role_title && ", " + search.current_role_title
                         }`}</span>
                         <span>{`${
-                          search.current_company &&
-                          ", " + search.current_company
+                          search.current_company_name &&
+                          ", " + search.current_company_name
                         }`}</span>
                       </div>
                     ),
