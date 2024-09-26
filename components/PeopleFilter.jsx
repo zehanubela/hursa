@@ -15,6 +15,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Loader from "./Loader";
 import { FaArrowLeft } from "react-icons/fa";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import AutoComplete from "./AutoComplete";
+import countryISO from "@/lib/countryISO.json";
 
 const PeopleFilter = ({
   selectedPeople,
@@ -109,23 +118,16 @@ const PeopleFilter = ({
           <AccordionItem value="country">
             <AccordionTrigger>Location</AccordionTrigger>
             <AccordionContent>
-              <Input
-                type="text"
-                placeholder="Country"
-                className="border border-gray-300 rounded-md p-2"
-                onChange={(e) =>
-                  setPayload({ ...payload, country: e.target.value })
-                }
-              />
+              <AutoComplete options={countryISO} />
             </AccordionContent>
           </AccordionItem>
 
           <AccordionItem value="current-role">
-            <AccordionTrigger>Current Role</AccordionTrigger>
+            <AccordionTrigger>Job Title</AccordionTrigger>
             <AccordionContent>
               <input
                 type="text"
-                placeholder="Current Role"
+                placeholder="Software Engineer"
                 className="border border-gray-300 rounded-md p-2"
                 value={payload.current_role}
                 onChange={(e) =>
@@ -151,7 +153,10 @@ const PeopleFilter = ({
           </AccordionItem>
 
           <div className="flex justify-center">
-            <Button onClick={handleSearch} className="w-full mt-4">
+            <Button
+              onClick={handleSearch}
+              className="w-full mt-4 bg-blue-500 text-white text-md font-semibold"
+            >
               Apply
             </Button>
           </div>
@@ -176,10 +181,19 @@ const PeopleFilter = ({
                 <div className="flex flex-col gap-4">
                   {JSON.parse(localStorage.getItem("recentSearches")).map(
                     (search) => (
-                      <div key={search.id} className="border-2 border-gray-200 p-4 rounded-md w-[400px] hover:cursor-pointer" onClick={() => handleViewRecentSearch(search.results)}>
+                      <div
+                        key={search.id}
+                        className="border-2 border-gray-200 p-4 rounded-md w-[400px] hover:cursor-pointer"
+                        onClick={() => handleViewRecentSearch(search.results)}
+                      >
                         <span>{search.country}</span>
-                        <span>{` ${search.current_role && ", " + search.current_role}`}</span>
-                        <span>{`${search.current_company && ", " + search.current_company}`}</span>
+                        <span>{` ${
+                          search.current_role && ", " + search.current_role
+                        }`}</span>
+                        <span>{`${
+                          search.current_company &&
+                          ", " + search.current_company
+                        }`}</span>
                       </div>
                     ),
                   )}
